@@ -15,6 +15,14 @@ document.addEventListener("keyup", e =>{
     keys[e.key] = false
 })
 
+// Init Sounds
+const coinsound = new Audio("./assets/audio/coin.wav")
+const misssound = new Audio("./assets/audio/miss.wav")
+const deathsound = new Audio("./assets/audio/death.wav")
+const song = new Audio("./assets/audio/song.mp3")
+
+song.loop = true
+
 // Variables
 const PLAYERSPEED = 5
 
@@ -37,9 +45,17 @@ var By1 = 0
 var Bx2 = 250
 var By2 = -30
 
+var canloop = true
+
 document.fonts.add(pixelfont)
 
-main()
+play()
+
+function play(){
+    canloop = true
+    song.play()
+    main()
+}
 
 // Main Loop
 function main(){
@@ -61,6 +77,7 @@ function main(){
         if (Score != 0){
             Score--
         }
+        misssound.play()
     }
     if (Cy2 > 600){
         Cy2 = 0
@@ -68,6 +85,7 @@ function main(){
         if (Score != 0){
             Score--
         }
+        misssound.play()
     }
     if (Cy3 > 600){
         Cy3 = 0
@@ -75,6 +93,7 @@ function main(){
         if (Score != 0){
             Score--
         }
+        misssound.play()
     }
     if (By1 > 600){
         By1 = 0
@@ -99,26 +118,36 @@ function main(){
         Px = 340
     }
 
-    if (rectvrectcollision(Px,520,60,40,Cx1,Cy1,20,20)){
-        Cy1 = 0
-        Cx1 = getRandomInt(381)
-        Score++
-    }
-    if (rectvrectcollision(Px,520,60,40,Cx2,Cy2,20,20)){
-        Cy2 = 0
-        Cx2 = getRandomInt(381)
-        Score++
-    }
-    if (rectvrectcollision(Px,520,60,40,Cx3,Cy3,20,20)){
-        Cy3 = 0
-        Cx3 = getRandomInt(381)
-        Score++
-    }
-    if (rectvrectcollision(Px,520,60,40,Bx1,By1,20,20)){
-        dead = true
-    }
-    if (rectvrectcollision(Px,520,60,40,Bx2,By2,20,20)){
-        dead = true
+    // Collision Detection
+    if (!dead){
+        if (rectvrectcollision(Px,520,60,40,Cx1,Cy1,20,20)){
+            Cy1 = 0
+            Cx1 = getRandomInt(381)
+            Score++
+            coinsound.play()
+        }
+        if (rectvrectcollision(Px,520,60,40,Cx2,Cy2,20,20)){
+            Cy2 = 0
+            Cx2 = getRandomInt(381)
+            Score++
+            coinsound.play()
+        }
+        if (rectvrectcollision(Px,520,60,40,Cx3,Cy3,20,20)){
+            Cy3 = 0
+            Cx3 = getRandomInt(381)
+            Score++
+            coinsound.play()
+        }
+        if (rectvrectcollision(Px,520,60,40,Bx1,By1,20,20)){
+            dead = true
+            song.pause()
+            deathsound.play()
+        }
+        if (rectvrectcollision(Px,520,60,40,Bx2,By2,20,20)){
+            dead = true
+            song.pause()
+            deathsound.play()
+        }
     }
 
     // Drawing
@@ -171,11 +200,16 @@ function main(){
             By1 = 0
             Bx2 = 250
             By2 = -30
+            canloop = false
         }
     }
 
     // Loop
-    requestAnimationFrame(main)
+    if (canloop){
+        requestAnimationFrame(main)
+    } else{
+        play()
+    }
 }
 
 function getRandomInt(max) {
