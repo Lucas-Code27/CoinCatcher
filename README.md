@@ -1,5 +1,5 @@
 # Coin Catcher
-A basic html canvas test
+A basic html canvas game
 ## Assets
 Music by me
 
